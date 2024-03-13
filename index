@@ -1,0 +1,264 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smooth Text Transition</title>
+<script src="https://d3js.org/d3.v7.min.js"></script> <!-- Include D3.js library -->
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: black; /* Set background color to black */
+    overflow: visible; /* Allow content to overflow */
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    position: relative;
+    overflow: visible; /* Allow content to overflow */
+  }
+
+  .slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: grey; /* Set text color to grey */
+    padding: 20px; /* Add padding for better visibility */
+    position: relative;
+    overflow: visible; /* Allow content to overflow */
+  }
+
+  .slide:nth-child(1) {
+    background-color: black; /* Set background color to black */
+    height: 100vh; /* Full viewport height */
+  }
+
+  .slide:nth-child(2),
+  .slide:nth-child(3) {
+    background-color: #111; /* Dark grey background */
+    height: auto; /* Auto height for variable content */
+    flex-direction: row-reverse; /* Arrange items in reverse order */
+    align-items: flex-start; /* Align items to the top */
+  }
+
+  .slide img {
+    width: 900px; /* Set width to 900 pixels */
+    height: auto; /* Maintain aspect ratio */
+    opacity: 0; /* Initially hide the image */
+    transition: opacity 0.5s; /* Smooth transition for opacity */
+  }
+
+  .text-container {
+    width: 50%; /* Set width to 50% */
+    margin-left: 20px; /* Add left margin for spacing */
+  }
+
+  .title-container {
+    text-align: center;
+    position: relative;
+  }
+
+  .title {
+    font-size: 4.5vw; /* Decreased font size by 30% */
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+    opacity: 1;
+    transition: opacity 0.5s ease; /* Smooth opacity transition */
+  }
+
+  .title.alt {
+    opacity: 0;
+    position: absolute;
+    top: 50%; /* Adjust top position */
+    left: 50%; /* Adjust left position */
+    transform: translate(-50%, -50%); /* Center the text */
+  }
+
+  .title-container:hover .title {
+    opacity: 0;
+  }
+
+  .title-container:hover .title.alt {
+    opacity: 1;
+  }
+
+  footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: black;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+  }
+
+  .blank-page {
+    width: 100%;
+    height: 100vh;
+    background-color: white; /* Set background color to white */
+  }
+
+  .header {
+    color: white;
+    margin-top: 10px;
+    opacity: 0;
+    animation: fadeIn 1s ease forwards;
+    text-align: left; /* Align text to the left */
+  }
+
+  .header h2,
+  .header h3 {
+    margin: 0; /* Remove default margin */
+  }
+
+  .header p {
+    color: cyan; /* Change text color to cyan */
+    font-size: 1.3em; /* Increase font size by 30% */
+  }
+
+  .viz-header {
+    font-size: 2em; /* Larger font size for VIZ headers, increased by 100% */
+    margin-left: 20px; /* Add left margin for spacing */
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Tears Animation */
+  @keyframes tears-fall {
+    0% {
+      transform: translateY(-50px); /* Tears start above the viewport */
+    }
+    100% {
+      transform: translateY(100vh); /* Tears fall below the viewport */
+    }
+  }
+
+  .tears {
+    position: absolute;
+    width: 2px;
+    height: 10px;
+    background-color: #fff;
+    opacity: 0.5;
+    animation: tears-fall 3s linear infinite; /* Tears fall animation */
+  }
+
+  /* Red Ball */
+  #ball {
+    position: fixed;
+    width: 40px; /* Increased size */
+    height: 40px; /* Increased size */
+    background-color: rgba(255, 0, 0, 0.5); /* Transparent red */
+    border-radius: 50%;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0.7; /* Slightly transparent */
+    transition: opacity 0.2s ease; /* Add transition for opacity */
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="slide1" class="slide">
+    <div class="title-container">
+      <p class="title original">Assignment 2:<br>Critic of Visualizations</p>
+      <p class="title alt">Bad Data Visualizations:<br>How they can be improved</p>
+    </div>
+    <!-- Tears Animation -->
+    <div class="tears" style="left: 20px;"></div>
+    <div class="tears" style="left: 40px;"></div>
+    <div class="tears" style="left: 60px;"></div>
+    <!-- Add more tears as needed -->
+  </div>
+  <div id="slide2" class="slide">
+    <h2 class="viz-header">#VIZ 1</h2>
+    <div class="text-container">
+      <div class="header">
+        <h3>Data (What they are showing)</h3>
+        <p>- A quick visualisation of PSI of Singapore through the years </p>
+        <p>- It tries to visualise our air quality from a yearly benchmark </p>
+        <h3>Idiom (How they are showing it)</h3>
+        <p>- Title header fails to indicate what year this chart represents </p>
+        <p>- Multiple bar charts are confusing </p>
+        <p>- Non alignment of the year and bar charts leave some users in doubt </p>
+        <p>- Sudden change in color of bars from 2014 is unclear </p>
+      </div>
+    </div>
+    <img src="https://onecms-res.cloudinary.com/image/upload/s--nZ1GNKJR--/f_auto,q_auto/v1/mediacorp/cna/image/2021-09/air-quality-psi-final.png?itok=h2WjAz4x" alt="Air Quality PSI">
+  </div>
+  <div id="slide3" class="slide">
+    <h2 class="viz-header">#VIZ 2</h2>
+    <div class="text-container">
+      <div class="header">
+        <h3>Data (What they are showing)</h3>
+        <p>- A quick visualisation of PSI of Singapore through the years </p>
+        <p>- It tries to visualise our air quality from a yearly benchmark </p>
+        <h3>Idiom (How they are showing it)</h3>
+        <p>- Title header fails to indicate what year this chart represents </p>
+        <p>- Multiple bar charts are confusing </p>
+        <p>- Non alignment of the year and bar charts leave some users in doubt </p>
+        <p>- Sudden change in color of bars from 2014 is unclear </p>
+      </div>
+    </div>
+    <img src="https://scontent.fsin16-1.fna.fbcdn.net/v/t1.6435-9/61370296_2678401522201174_7408983950430830592_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=dd63ad&_nc_ohc=AhVnRkKcusMAX_y4LDp&_nc_ht=scontent.fsin16-1.fna&oh=00_AfBz2TZjrtcZeM3ujWrvXnCubtvRFeC61SFaSmNgjC15XA&oe=65FE464F" alt="Second Image">
+  </div>
+</div>
+<footer>
+  Low Code No Code Shawn Ng 1008360
+</footer>
+<div id="ball"></div>
+
+<script>
+  // Get the ball element
+  var ball = document.getElementById('ball');
+
+  // Function to move the ball according to mouse position with a slight delay
+  function moveBall(event) {
+    var x = event.clientX;
+    var y = event.clientY;
+    // Add a delay to the ball movement
+    setTimeout(() => {
+      ball.style.left = x - (ball.offsetWidth / 2) + 'px';
+      ball.style.top = y - (ball.offsetHeight / 2) + 'px';
+    }, 50); // Adjust the delay as needed
+  }
+
+  // Add mousemove event listener to the body
+  document.body.addEventListener('mousemove', moveBall);
+
+  // Update ball position on scroll
+  window.addEventListener('scroll', moveBall);
+
+  // Function to fade in images as user scrolls down
+  function fadeInImages() {
+    var images = document.querySelectorAll('.slide img');
+    images.forEach(function(img) {
+      var bounding = img.getBoundingClientRect();
+      if (bounding.top < window.innerHeight && bounding.bottom >= 0) {
+        img.style.opacity = '1';
+      }
+    });
+  }
+
+  // Add scroll event listener to fade in images
+  window.addEventListener('scroll', fadeInImages);
+  // Call the function initially to check if images are already in view
+  fadeInImages();
+</script>
+
+</body>
+</html>
